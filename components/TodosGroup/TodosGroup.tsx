@@ -1,7 +1,10 @@
 import { todosGroup, TodoItem } from "../../types"
-import { forwardRef } from "react"
+import { forwardRef, useEffect, useState } from "react"
 import { TodosGroupTitle } from "./TodosGroupTitle"
 import classNames from "classnames"
+import axios from "../../lib/axios"
+import { TodosGroupItem } from "./TodosGroupItem"
+import { TodosGroupDescription } from "./TodosGroupDescription"
 
 interface TodosGroupProps {
   todosGroup: todosGroup
@@ -17,6 +20,14 @@ const variantClasses = {
 
 export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
   ({ todosGroup, variant }, ref) => {
+    const [todoItems, setTodoItems] = useState<TodoItem[]>([])
+
+    useEffect(() => {
+      axios.get(`/todos/${todosGroup.id}/items`).then((res) => {
+        setTodoItems(res.data)
+      })
+    }, [todosGroup.id])
+
     return (
       <div
         className={classNames(
@@ -27,7 +38,19 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
       >
         <TodosGroupTitle title={todosGroup.title} variant={variant} />
 
-        <div className="mt-4 text-xs">{todosGroup.description}</div>
+        <TodosGroupDescription description={todosGroup.description} />
+
+        <div className="mt-4 flex flex-col gap-4">
+          {todoItems.map((todoItem) => (
+            <TodosGroupItem key={todoItem.id} todoItem={todoItem} />
+          ))}
+
+          {todoItems.length === 0 && (
+            <div className="border border-[#E0E0E0] bg-[#FAFAFA] text-[#757575] rounded px-4 py-2">
+              No Task
+            </div>
+          )}
+        </div>
       </div>
     )
   }
