@@ -5,6 +5,7 @@ import classNames from "classnames"
 import axios from "../../lib/axios"
 import { TodosGroupItem } from "./TodosGroupItem"
 import { TodosGroupDescription } from "./TodosGroupDescription"
+import { TodosGroupNewTask } from "./TodosGroupNewTask"
 
 interface TodosGroupProps {
   todosGroup: todosGroup
@@ -22,6 +23,10 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
   ({ todosGroup, variant }, ref) => {
     const [todoItems, setTodoItems] = useState<TodoItem[]>([])
 
+    const handleCreateTask = (todoItem: TodoItem) => {
+      setTodoItems((prev) => [...prev, todoItem])
+    }
+
     useEffect(() => {
       axios.get(`/todos/${todosGroup.id}/items`).then((res) => {
         setTodoItems(res.data)
@@ -31,7 +36,7 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
     return (
       <div
         className={classNames(
-          "border w-80 shrink-0 p-4 rounded",
+          "border w-80 shrink-0 p-4 rounded self-start",
           variantClasses[variant]
         )}
         ref={ref}
@@ -51,6 +56,11 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
             </div>
           )}
         </div>
+
+        <TodosGroupNewTask
+          todosGroupId={todosGroup.id}
+          createTaskCallback={handleCreateTask}
+        />
       </div>
     )
   }
