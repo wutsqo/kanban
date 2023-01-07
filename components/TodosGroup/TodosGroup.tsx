@@ -27,6 +27,12 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
       setTodoItems((prev) => [...prev, todoItem])
     }
 
+    const handleDeleteTask = (todoItemId: number) => {
+      setTodoItems((prev) =>
+        prev.filter((todoItem) => todoItem.id !== todoItemId)
+      )
+    }
+
     useEffect(() => {
       axios.get(`/todos/${todosGroup.id}/items`).then((res) => {
         setTodoItems(res.data)
@@ -47,7 +53,12 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
 
         <div className="mt-4 flex flex-col gap-4">
           {todoItems.map((todoItem) => (
-            <TodosGroupItem key={todoItem.id} todoItem={todoItem} />
+            <TodosGroupItem
+              handleDeleteTask={handleDeleteTask}
+              todosGroupId={todosGroup.id}
+              key={todoItem.id}
+              todoItem={todoItem}
+            />
           ))}
 
           {todoItems.length === 0 && (
