@@ -15,7 +15,7 @@ export const ChecklistIcon = () => {
         <path
           d="M5.6001 7.89098L7.2001 9.49098L10.2911 6.40002"
           stroke="white"
-          stroke-width="2"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
