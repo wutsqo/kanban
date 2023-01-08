@@ -17,7 +17,7 @@ interface Props {
 export const Dropdown = forwardRef<HTMLDivElement, Props>(
   ({ isOpen, onDismiss, actions, ...props }, ref) => {
     return (
-      <Menu as="div" className="flex items-center">
+      <Menu as="div" className="flex items-center z-10">
         <Menu.Button className="hover:bg-[#EDEDED] rounded">
           <MeatBallMenuIcon />
         </Menu.Button>
