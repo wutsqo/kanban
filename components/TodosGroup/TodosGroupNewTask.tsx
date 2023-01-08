@@ -1,37 +1,36 @@
-import { forwardRef, useState } from "react"
+import { forwardRef, useContext, useState } from "react"
 import { PlusIcon } from "../Icons"
 import { useDialog } from "../../hooks/useDialog"
 import { Modal } from "../Modal/Modal"
 import { Input } from "../Form"
 import { Button } from "../Button"
-import axios from "../../lib/axios"
-import { TodoItem } from "../../types"
+import { serviceCreateTodoItem } from "../../services"
+import { TodosContext } from "../Container/KanbanContainer"
 
 interface Props {
   todosGroupId: number
-  createTaskCallback: (item: TodoItem) => void
 }
 
 export const TodosGroupNewTask = forwardRef<HTMLDivElement, Props>(
-  ({ todosGroupId, createTaskCallback }, ref) => {
+  ({ todosGroupId }, ref) => {
     const { ref: modalRef, show, handleShow, handleHide } = useDialog()
+
     const [name, setname] = useState<string>("")
     const [progress, setProgress] = useState<number>(0)
 
-    const handleCreateTask = () => {
-      axios
-        .post(`/todos/${todosGroupId}/items`, {
-          name: name,
-          progress_percentage: progress,
-        })
+    const { createTodoItem } = useContext(TodosContext)
+
+    const handleCreate = () => {
+      serviceCreateTodoItem(todosGroupId, name, progress)
         .then((res) => {
-          handleHide()
           setname("")
           setProgress(0)
-          createTaskCallback(res.data)
+          handleHide()
+          createTodoItem(res.data)
         })
         .catch((err) => {
-          alert("Failed to create task")
+          alert("Failed to create new task")
+          console.log(err)
         })
     }
 
@@ -90,7 +89,7 @@ export const TodosGroupNewTask = forwardRef<HTMLDivElement, Props>(
               variant="primary"
               title="Add new task"
               type="button"
-              onClick={handleCreateTask}
+              onClick={handleCreate}
             >
               Save Task
             </Button>

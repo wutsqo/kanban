@@ -1,15 +1,16 @@
-import { todosGroup, TodoItem } from "../../types"
-import { forwardRef, useEffect, useState } from "react"
+import { TodosGroup } from "../../types"
+import { forwardRef } from "react"
 import { TodosGroupTitle } from "./TodosGroupTitle"
 import classNames from "classnames"
-import axios from "../../lib/axios"
 import { TodosGroupItem } from "./TodosGroupItem"
 import { TodosGroupDescription } from "./TodosGroupDescription"
 import { TodosGroupNewTask } from "./TodosGroupNewTask"
 
 interface TodosGroupProps {
-  todosGroup: todosGroup
+  todosGroup: TodosGroup
   variant: "main" | "secondary" | "tertiary" | "quaternary"
+  leftTodosGroupId?: number
+  rightTodosGroupId?: number
 }
 
 const variantClasses = {
@@ -20,24 +21,8 @@ const variantClasses = {
 }
 
 export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
-  ({ todosGroup, variant }, ref) => {
-    const [todoItems, setTodoItems] = useState<TodoItem[]>([])
-
-    const handleCreateTask = (todoItem: TodoItem) => {
-      setTodoItems((prev) => [...prev, todoItem])
-    }
-
-    const handleDeleteTask = (todoItemId: number) => {
-      setTodoItems((prev) =>
-        prev.filter((todoItem) => todoItem.id !== todoItemId)
-      )
-    }
-
-    useEffect(() => {
-      axios.get(`/todos/${todosGroup.id}/items`).then((res) => {
-        setTodoItems(res.data)
-      })
-    }, [todosGroup.id])
+  ({ todosGroup, variant, leftTodosGroupId, rightTodosGroupId }, ref) => {
+    const { todoItems = [] } = todosGroup
 
     return (
       <div
@@ -52,12 +37,13 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
         <TodosGroupDescription description={todosGroup.description} />
 
         <div className="mt-4 flex flex-col gap-4">
-          {todoItems.map((todoItem) => (
+          {todoItems.map((todoItem, i) => (
             <TodosGroupItem
-              handleDeleteTask={handleDeleteTask}
               todosGroupId={todosGroup.id}
               key={todoItem.id}
               todoItem={todoItem}
+              leftTodosGroupId={leftTodosGroupId}
+              rightTodosGroupId={rightTodosGroupId}
             />
           ))}
 
@@ -68,10 +54,7 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
           )}
         </div>
 
-        <TodosGroupNewTask
-          todosGroupId={todosGroup.id}
-          createTaskCallback={handleCreateTask}
-        />
+        <TodosGroupNewTask todosGroupId={todosGroup.id} />
       </div>
     )
   }

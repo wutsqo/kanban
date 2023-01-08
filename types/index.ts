@@ -1,10 +1,11 @@
-export interface todosGroup {
+export interface TodosGroup {
   id: number
   title: string
   created_by: string
   created_at: string
   updated_at: string
   description: string
+  todoItems: TodoItem[]
 }
 
 export interface TodoItem {
