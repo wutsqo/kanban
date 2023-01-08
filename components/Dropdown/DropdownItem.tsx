@@ -11,9 +11,9 @@ interface Props {
 }
 
 export const DropdownItem = forwardRef<HTMLDivElement, Props>(
-  ({ children, onClick, icon, key, activeClassname, ...props }, ref) => {
+  ({ children, onClick, icon, activeClassname, ...props }, ref) => {
     return (
-      <Menu.Item as="div" key={key} ref={ref}>
+      <Menu.Item as="div" ref={ref}>
         {({ active }) => (
           <button
             className={classNames(
