@@ -8,7 +8,7 @@ interface Props {
   show: boolean
   onDismiss: (show: boolean) => void
   children: React.ReactNode
-  title: string
+  title: React.ReactNode
 }
 
 const nunitoSans = Nunito_Sans({
