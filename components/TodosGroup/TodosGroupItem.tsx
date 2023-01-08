@@ -2,10 +2,13 @@ import { forwardRef, useState } from "react"
 import classNames from "classnames"
 import { TodoItem } from "../../types"
 import { ProgressBar } from "../ProgressBar"
-import { TrashIcon } from "../Icons"
+import { ExclamationIcon, TrashIcon } from "../Icons"
 import { Dropdown } from "../Dropdown"
 import axios from "../../lib/axios"
 import { AxiosError } from "axios"
+import { useDialog } from "../../hooks/useDialog"
+import { Button } from "../Button"
+import { Modal } from "../Modal"
 
 interface Props {
   todoItem: TodoItem
@@ -16,6 +19,13 @@ interface Props {
 export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
   ({ todoItem, todosGroupId, handleDeleteTask }, ref) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+    const {
+      ref: deleteDialogRef,
+      show: showDeleteDialog,
+      handleShow: handleShowDeleteDialog,
+      handleHide: handleHideDeleteDialog,
+    } = useDialog()
 
     const handleDelete = () => {
       axios
@@ -50,7 +60,7 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
               {
                 icon: <TrashIcon />,
                 children: "Delete",
-                onClick: handleDelete,
+                onClick: handleShowDeleteDialog,
                 activeClassname: "text-red-500",
               },
             ]}
@@ -58,6 +68,41 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
             isOpen={isDropdownOpen}
           />
         </div>
+
+        <Modal
+          title={
+            <div className="flex gap-2 items-center">
+              <ExclamationIcon /> Delete Task
+            </div>
+          }
+          onDismiss={handleHideDeleteDialog}
+          show={showDeleteDialog}
+          ref={deleteDialogRef}
+        >
+          <div className="text-left">
+            Are you sure want to delete this task? your action can’t be
+            reverted.
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6">
+            <Button
+              variant="secondary"
+              title="Cancel"
+              type="button"
+              onClick={handleHideDeleteDialog}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              title="Delete"
+              type="button"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </Modal>
       </div>
     )
   }
