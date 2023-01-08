@@ -6,12 +6,13 @@ interface Props {
   title: string
   type?: "button" | "submit" | "reset"
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
-  variant?: "primary" | "secondary"
+  variant?: "primary" | "secondary" | "danger"
 }
 
 const variants = {
   primary: "bg-[#01959F] border-[#01959F] text-white hover:brightness-90",
   secondary: "bg-white border-[#E0E0E0] text-black",
+  danger: "bg-red-500 border-red-500 text-white hover:brightness-90",
 }
 
 export const Button = forwardRef<HTMLButtonElement, Props>(
