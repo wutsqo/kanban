@@ -5,7 +5,7 @@ import { ProgressBar } from "../ProgressBar"
 import { ArrowLeftIcon, ArrowRightIcon, PencilIcon, TrashIcon } from "../Icons"
 import { Dropdown } from "../Dropdown"
 import { useDialog } from "../../hooks/useDialog"
-import { DeleteTaskModal, EditTaskModal, Modal } from "../Modal"
+import { DeleteTaskModal, EditTaskModal } from "../Modal"
 import { TodosContext } from "../Container/KanbanContainer"
 import { serviceMoveTodoItem } from "../../services"
 
