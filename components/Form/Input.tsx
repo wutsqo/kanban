@@ -10,6 +10,7 @@ interface Props {
   step?: number
   min?: number
   max?: number
+  width?: string
 }
 
 export const Input = forwardRef<HTMLInputElement, Props>(
@@ -28,6 +29,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
           value={value}
           onChange={onChange}
           className="border-2 border-[#EDEDED] px-4 py-2 rounded-md focus:outline-none w-full"
+          style={{ width: props.width }}
           {...props}
         />
       </div>

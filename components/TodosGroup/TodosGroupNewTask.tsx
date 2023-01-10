@@ -74,6 +74,7 @@ export const TodosGroupNewTask = forwardRef<HTMLDivElement, Props>(
             min={0}
             max={100}
             step={10}
+            width="8rem"
           />
 
           <div className="flex justify-end gap-2 mt-6">
