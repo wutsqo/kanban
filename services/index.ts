@@ -33,10 +33,24 @@ const moveTodoItem = (
   })
 }
 
+const editTodoItem = (
+  todoId: number,
+  todoItemId: number,
+  name: string,
+  progress_percentage: number
+) => {
+  return axios.patch(`/todos/${todoId}/items/${todoItemId}`, {
+    name,
+    progress_percentage,
+    target_todo_id: todoId,
+  })
+}
+
 export {
   getTodosGroups as serviceGetTodosGroups,
   getTodoItems as serviceGetTodoItems,
   createTodoItem as serviceCreateTodoItem,
   deleteTodoItem as serviceDeleteTodoItem,
   moveTodoItem as serviceMoveTodoItem,
+  editTodoItem as serviceEditTodoItem,
 }

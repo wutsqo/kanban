@@ -28,7 +28,7 @@ export const Layout: FC<LayoutProps> = (props) => {
 
       <div className={nunitoSans.className}>
         <Header />
-        <main>{children}</main>
+        <main className="min-h-screen">{children}</main>
       </div>
     </>
   )

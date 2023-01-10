@@ -6,6 +6,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ExclamationIcon,
+  PencilIcon,
   TrashIcon,
 } from "../Icons"
 import { Dropdown } from "../Dropdown"
@@ -13,7 +14,12 @@ import { useDialog } from "../../hooks/useDialog"
 import { Button } from "../Button"
 import { Modal } from "../Modal"
 import { TodosContext } from "../Container/KanbanContainer"
-import { serviceDeleteTodoItem, serviceMoveTodoItem } from "../../services"
+import {
+  serviceDeleteTodoItem,
+  serviceEditTodoItem,
+  serviceMoveTodoItem,
+} from "../../services"
+import { Input } from "../Form"
 
 interface Props {
   todoItem: TodoItem
@@ -25,6 +31,10 @@ interface Props {
 export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
   ({ todoItem, leftTodosGroupId, rightTodosGroupId }, ref) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+    const [name, setName] = useState<string>(todoItem.name)
+    const [progress, setProgress] = useState<number>(
+      todoItem.progress_percentage
+    )
 
     const {
       ref: deleteDialogRef,
@@ -33,7 +43,15 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
       handleHide: handleHideDeleteDialog,
     } = useDialog()
 
-    const { deleteTodoItem, moveTodoItem } = useContext(TodosContext)
+    const {
+      ref: editDialogRef,
+      show: showEditDialog,
+      handleShow: handleShowEditDialog,
+      handleHide: handleHideEditDialog,
+    } = useDialog()
+
+    const { deleteTodoItem, moveTodoItem, editTodoItem } =
+      useContext(TodosContext)
 
     const handleDelete = () => {
       serviceDeleteTodoItem(todoItem.todo_id, todoItem.id)
@@ -57,6 +75,20 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
       })
     }
 
+    const handleEdit = () => {
+      serviceEditTodoItem(todoItem.todo_id, todoItem.id, name, progress)
+        .then((res) => {
+          setName("")
+          setProgress(0)
+          handleHideEditDialog()
+          editTodoItem(res.data)
+        })
+        .catch((err) => {
+          alert("Failed to create new task")
+          console.log(err)
+        })
+    }
+
     const actions = []
     if (leftTodosGroupId)
       actions.push({
@@ -73,6 +105,13 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
         onClick: () => handleMove(rightTodosGroupId),
         activeClassname: "text-primary-main",
       })
+
+    actions.push({
+      icon: <PencilIcon />,
+      children: "Edit",
+      onClick: handleShowEditDialog,
+      activeClassname: "text-primary-main",
+    })
 
     actions.push({
       icon: <TrashIcon />,
@@ -132,6 +171,52 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
               onClick={handleDelete}
             >
               Delete
+            </Button>
+          </div>
+        </Modal>
+
+        <Modal
+          title="Edit Task"
+          onDismiss={handleHideEditDialog}
+          show={showEditDialog}
+          ref={editDialogRef}
+        >
+          <Input
+            placeholder="Type your task"
+            label="Task Name"
+            name="task_name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            placeholder="Progress"
+            label="Progress"
+            name="progress"
+            type="number"
+            value={progress.toString()}
+            onChange={(e) => setProgress(Number(e.target.value))}
+            min={0}
+            max={100}
+            step={10}
+          />
+
+          <div className="flex justify-end gap-2 mt-6">
+            <Button
+              variant="secondary"
+              title="Add new task"
+              type="button"
+              onClick={handleHideEditDialog}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              title="Add new task"
+              type="button"
+              onClick={handleEdit}
+            >
+              Save Change
             </Button>
           </div>
         </Modal>

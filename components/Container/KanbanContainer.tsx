@@ -80,7 +80,16 @@ export const KanbanContainer: FC = () => {
   }
 
   const editTodoItem = (todoItem: TodoItem) => {
-    // TODO: implement editTodoItem
+    const newTodosGroups = [...todosGroups]
+    const found = newTodosGroups.find((tg) =>
+      tg.todoItems.find((ti) => ti.id === todoItem.id)
+    )
+
+    if (found) {
+      const index = found.todoItems.findIndex((ti) => ti.id === todoItem.id)
+      found.todoItems[index] = todoItem
+      setTodosGroups(newTodosGroups)
+    }
   }
 
   return (
@@ -94,7 +103,7 @@ export const KanbanContainer: FC = () => {
         editTodoItem,
       }}
     >
-      <div className="p-5 flex gap-5 overflow-x-auto pb-24">
+      <div className="p-5 flex gap-5 overflow-auto pt-20 pb-32 h-screen">
         {todosGroups.map((tg, i) => (
           <TodosGroupCard
             key={i}
