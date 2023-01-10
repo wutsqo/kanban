@@ -23,7 +23,6 @@ import { Input } from "../Form"
 
 interface Props {
   todoItem: TodoItem
-  todosGroupId: number
   leftTodosGroupId?: number
   rightTodosGroupId?: number
 }

@@ -39,7 +39,6 @@ export const TodosGroupCard = forwardRef<HTMLDivElement, TodosGroupProps>(
         <div className="mt-4 flex flex-col gap-4">
           {todoItems.map((todoItem, i) => (
             <TodosGroupItem
-              todosGroupId={todosGroup.id}
               key={todoItem.id}
               todoItem={todoItem}
               leftTodosGroupId={leftTodosGroupId}
