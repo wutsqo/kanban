@@ -4,6 +4,10 @@ Test submission for Frontend Developer position at Rakamin Academy
 
 https://github.com/wutsqo/kanban
 
+## Demo
+
+https://kanban-wutsqo.vercel.app
+
 ## Features
 
 1. Users can create a task
