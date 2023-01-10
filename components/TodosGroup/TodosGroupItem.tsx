@@ -2,24 +2,12 @@ import { forwardRef, useContext, useState } from "react"
 import classNames from "classnames"
 import { TodoItem } from "../../types"
 import { ProgressBar } from "../ProgressBar"
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ExclamationIcon,
-  PencilIcon,
-  TrashIcon,
-} from "../Icons"
+import { ArrowLeftIcon, ArrowRightIcon, PencilIcon, TrashIcon } from "../Icons"
 import { Dropdown } from "../Dropdown"
 import { useDialog } from "../../hooks/useDialog"
-import { Button } from "../Button"
-import { Modal } from "../Modal"
+import { DeleteTaskModal, EditTaskModal } from "../Modal"
 import { TodosContext } from "../Container/KanbanContainer"
-import {
-  serviceDeleteTodoItem,
-  serviceEditTodoItem,
-  serviceMoveTodoItem,
-} from "../../services"
-import { Input } from "../Form"
+import { serviceMoveTodoItem } from "../../services"
 
 interface Props {
   todoItem: TodoItem
@@ -29,11 +17,7 @@ interface Props {
 
 export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
   ({ todoItem, leftTodosGroupId, rightTodosGroupId }, ref) => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const [name, setName] = useState<string>(todoItem.name)
-    const [progress, setProgress] = useState<number>(
-      todoItem.progress_percentage
-    )
+    const [isDropdownOpen] = useState(false)
 
     const {
       ref: deleteDialogRef,
@@ -49,20 +33,7 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
       handleHide: handleHideEditDialog,
     } = useDialog()
 
-    const { deleteTodoItem, moveTodoItem, editTodoItem } =
-      useContext(TodosContext)
-
-    const handleDelete = () => {
-      serviceDeleteTodoItem(todoItem.todo_id, todoItem.id)
-        .then(() => {
-          handleHideDeleteDialog()
-          deleteTodoItem(todoItem.id)
-        })
-        .catch((err) => {
-          alert("Failed to delete task")
-          console.log(err)
-        })
-    }
+    const { moveTodoItem } = useContext(TodosContext)
 
     const handleMove = (targetTodosGroupId: number) => {
       serviceMoveTodoItem(
@@ -72,20 +43,6 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
       ).then(() => {
         moveTodoItem(todoItem.id, targetTodosGroupId)
       })
-    }
-
-    const handleEdit = () => {
-      serviceEditTodoItem(todoItem.todo_id, todoItem.id, name, progress)
-        .then((res) => {
-          setName("")
-          setProgress(0)
-          handleHideEditDialog()
-          editTodoItem(res.data)
-        })
-        .catch((err) => {
-          alert("Failed to create new task")
-          console.log(err)
-        })
     }
 
     const actions = []
@@ -139,87 +96,19 @@ export const TodosGroupItem = forwardRef<HTMLDivElement, Props>(
           />
         </div>
 
-        <Modal
-          title={
-            <div className="flex gap-2 items-center">
-              <ExclamationIcon /> Delete Task
-            </div>
-          }
-          onDismiss={handleHideDeleteDialog}
+        <DeleteTaskModal
+          todoItem={todoItem}
           show={showDeleteDialog}
+          handleHide={handleHideDeleteDialog}
           ref={deleteDialogRef}
-        >
-          <div className="text-left">
-            Are you sure want to delete this task? your action can’t be
-            reverted.
-          </div>
+        />
 
-          <div className="flex justify-end gap-2 mt-6">
-            <Button
-              variant="secondary"
-              title="Cancel"
-              type="button"
-              onClick={handleHideDeleteDialog}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="danger"
-              title="Delete"
-              type="button"
-              onClick={handleDelete}
-            >
-              Delete
-            </Button>
-          </div>
-        </Modal>
-
-        <Modal
-          title="Edit Task"
-          onDismiss={handleHideEditDialog}
+        <EditTaskModal
+          todoItem={todoItem}
           show={showEditDialog}
+          handleHide={handleHideEditDialog}
           ref={editDialogRef}
-        >
-          <Input
-            placeholder="Type your task"
-            label="Task Name"
-            name="task_name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Input
-            placeholder="Progress"
-            label="Progress"
-            name="progress"
-            type="number"
-            value={progress.toString()}
-            onChange={(e) => setProgress(Number(e.target.value))}
-            min={0}
-            max={100}
-            step={10}
-            width="8rem"
-          />
-
-          <div className="flex justify-end gap-2 mt-6">
-            <Button
-              variant="secondary"
-              title="Add new task"
-              type="button"
-              onClick={handleHideEditDialog}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              title="Add new task"
-              type="button"
-              onClick={handleEdit}
-            >
-              Save Change
-            </Button>
-          </div>
-        </Modal>
+        />
       </div>
     )
   }
