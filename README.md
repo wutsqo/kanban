@@ -1,6 +1,6 @@
 # Kanban Board Mini Project
 
-Test submission for Frontend Developer position at Rakamin Academy
+Test submission for a Frontend Developer position at Rakamin Academy
 
 https://github.com/wutsqo/kanban
 
@@ -23,7 +23,7 @@ yarn dev
 
 ## Tech Stack
 
-Built with minimal dependencies to external libraries.
+Built with minimal dependencies on external libraries.
 
 1. React + Next + TypeScript
 2. Tailwind CSS + Headless UI for styling
