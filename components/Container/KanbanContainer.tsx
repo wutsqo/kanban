@@ -106,7 +106,7 @@ export const KanbanContainer: FC = () => {
       <div className="p-5 flex gap-5 overflow-auto pt-20 pb-32 h-screen">
         {todosGroups.map((tg, i) => (
           <TodosGroupCard
-            key={i}
+            key={tg.id}
             todosGroup={tg}
             variant={variants[i % variants.length]}
             leftTodosGroupId={i !== 0 ? todosGroups[i - 1]?.id : undefined}
